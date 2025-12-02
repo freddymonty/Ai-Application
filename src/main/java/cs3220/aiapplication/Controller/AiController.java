@@ -100,6 +100,9 @@ public class AiController {
             model.addAttribute("favorites", favorites);
 //            model.addAttribute("recipes", dataStore.getRecipes(userId));
 //            model.addAttribute("favorites", dataStore.getFavorites(userId));
+            //find if inventory is empty and pass that to jte
+        model.addAttribute("emptyInv", ingredientRepository.count() <= 0);
+
             return "homePage";
 
     }
