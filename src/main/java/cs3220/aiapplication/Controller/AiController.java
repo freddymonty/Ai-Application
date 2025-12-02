@@ -1,6 +1,10 @@
 package cs3220.aiapplication.Controller;
 
 import cs3220.aiapplication.model.*;
+import cs3220.aiapplication.repository.IngredientRepository;
+import cs3220.aiapplication.repository.RecipeRepository;
+import cs3220.aiapplication.repository.UserRepository;
+import org.hibernate.graph.InvalidGraphException;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.messages.AssistantMessage;
 import org.springframework.ai.chat.messages.Message;
@@ -20,22 +24,25 @@ import java.util.List;
 @Controller
 public class AiController {
     private final ChatClient chatClient;
-    public final DataStore dataStore;
     public final UserBean userBean;
-    private final List<Recipe> recipeHistory = new ArrayList<>();
+    private final List<RecipeJDBC> recipeHistory = new ArrayList<>();
+    private final UserRepository userRepository;
+    private final RecipeRepository recipeRepository;
+    private final IngredientRepository ingredientRepository;
 
-    public AiController(DataStore dataStore, UserBean userBean, ChatClient.Builder chatClientBuilder){
-        this.dataStore = dataStore;
+    public AiController(UserBean userBean, ChatClient.Builder chatClientBuilder, UserRepository userRepository, RecipeRepository recipeRepository, IngredientRepository ingredientRepository) {
         this.userBean = userBean;
         this.chatClient = chatClientBuilder.build();
+        this.userRepository = userRepository;
+        this.recipeRepository = recipeRepository;
+        this.ingredientRepository = ingredientRepository;
     }
 
     private String realChat(String message){
        List<Message> messages = new ArrayList<>();
+       messages.add(new SystemMessage("You are a helpful assistant. Generate a recipe using the user's ingredients, try to closely follow each ingredient's quantity. " + "Output Format: Title, list of main ingredients, and the instructions"));
 
-       messages.add(new SystemMessage("You are a helpful assistant. Generate a recipe using the user's ingredients. " + "Output Format: Title, list of main ingredients, and the instructions"));
-
-       for(Recipe recipe: recipeHistory){
+       for(RecipeJDBC recipe: recipeHistory){
            messages.add(new UserMessage(recipe.getPrompt()));
            messages.add(new AssistantMessage(recipe.getContent()));
        }
@@ -85,10 +92,14 @@ public class AiController {
 
         }
             int userId = userBean.getUser().getId();
-        // send homepage what tab we are in
+            // send homepage what tab we are in
             model.addAttribute("tab", tab);
-            model.addAttribute("recipes", dataStore.getRecipes(userId));
-            model.addAttribute("favorites", dataStore.getFavorites(userId));
+            List<RecipeJDBC> recipes = recipeRepository.findByUserId(userId);
+            List<RecipeJDBC> favorites = recipes.stream().filter(RecipeJDBC::isFavorite).toList();
+            model.addAttribute("recipes", recipes);
+            model.addAttribute("favorites", favorites);
+//            model.addAttribute("recipes", dataStore.getRecipes(userId));
+//            model.addAttribute("favorites", dataStore.getFavorites(userId));
             return "homePage";
 
     }
@@ -100,7 +111,21 @@ public class AiController {
         }
 
         int userId = userBean.getUser().getId();
-        List<String> ingredientsName = dataStore.getIngredient(userId).stream().map(Ingredient::getName).toList();
+        //List<String> ingredientsName = dataStore.getIngredient(userId).stream().map(Ingredient::getName).toList();
+        List<IngredientJDBC> ingredientList = ingredientRepository.findByUserId(userId);
+        List<String> ingredientsName = ingredientList.stream().map(IngredientJDBC::getName).toList();
+
+        List<String> ingredientsWithQuantity = new ArrayList<>();
+
+        for(int i = 0; i < ingredientList.size(); i++){
+            String name = ingredientList.get(i).getName();
+            String quantity = ingredientList.get(i).getQuantity();
+            ingredientsWithQuantity.add(name + "(" + quantity + ")");
+
+        }
+
+        String ingredientsString = String.join(", ", ingredientsWithQuantity);
+
 
 
         String cookingLevel = (level == null) ?"beginner": level;
@@ -108,7 +133,7 @@ public class AiController {
         String ingredients = String.join(", ", ingredientsName);
         System.out.println("Ingredients String: " + ingredients);
         String userPrompt =
-                "Using ONLY these ingredients as the base: " + ingredients + ", " +
+                "Using ONLY these ingredients as the base: " + ingredientsString + ", " +
                         "create a recipe based on: " + prompt + ". " +
                         "The recipe must follow this exact format:\n\n" +
                         "Title: <short recipe title>\n" +
@@ -125,25 +150,25 @@ public class AiController {
 
         String title = extractTitle(aiResponse);
 
-        Recipe recipe = new Recipe(
-                dataStore.getNextRecipeId(),
-                userId,
-                title,
-                java.time.LocalTime.now(),
-                prompt,
-                mainIngredients,
-                aiResponse,
-                false
-        );
+        RecipeJDBC recipe = new RecipeJDBC();
+        recipe.setUser(userBean.getUser());
+        recipe.setTitle(title);
+        recipe.setDate(LocalTime.now());
+        recipe.setPrompt(prompt);
+        recipe.setMainIngredients(mainIngredients);
+        recipe.setContent(aiResponse);
+        recipe.setFavorite(false);
 
+        recipeRepository.save(recipe);
         recipeHistory.add(recipe);
-        dataStore.addRecipe(userId, recipe);
+
 
         // Use DataStore recipes for the sidebar
-        model.addAttribute("recipes", dataStore.getRecipes(userId));
-        model.addAttribute("favorites", dataStore.getFavorites(userId));
+        List<RecipeJDBC> recipes = recipeRepository.findByUserId(userId);
+        List<RecipeJDBC> favorites = recipes.stream().filter(RecipeJDBC::isFavorite).toList();
+        model.addAttribute("recipes", recipes);
+        model.addAttribute("favorites", favorites);
         model.addAttribute("aiResponse", aiResponse);
-
 
         return "redirect:/viewRecipe?id=" + recipe.getId();
     }
