@@ -1,5 +1,6 @@
 @param java.util.List<cs3220.aiapplication.model.RecipeJDBC> recipes
 @param java.util.List<cs3220.aiapplication.model.RecipeJDBC> favorites
+@param Boolean emptyInv
 @param String tab
 <!doctype html>
 <html lang="en">
@@ -178,6 +179,15 @@
 
 <!-- Main Content -->
 <main id="content" class="content p-4 d-flex flex-column justify-content-center align-items-center" style="min-height: 80vh;">
+    <!-- Empty inventory warning !-->
+    @if (emptyInv)
+        <div>
+            Before generating a recipe, go to your <a href = "inventory">inventory</a> and add the ingredients you have to work with!
+            <br/>
+            <br/>
+
+        </div>
+    @endif
     <!-- Chat box -->
     <!--    chat box form-->
 <%--    send to viewRecipe.jte but also update in home, results, and favorites--%>
