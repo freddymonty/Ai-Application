@@ -115,13 +115,25 @@ public class AiController {
         List<IngredientJDBC> ingredientList = ingredientRepository.findByUserId(userId);
         List<String> ingredientsName = ingredientList.stream().map(IngredientJDBC::getName).toList();
 
+        List<String> ingredientsWithQuantity = new ArrayList<>();
+
+        for(int i = 0; i < ingredientList.size(); i++){
+            String name = ingredientList.get(i).getName();
+            String quantity = ingredientList.get(i).getQuantity();
+            ingredientsWithQuantity.add(name + "(" + quantity + ")");
+
+        }
+
+        String ingredientsString = String.join(", ", ingredientsWithQuantity);
+
+
 
         String cookingLevel = (level == null) ?"beginner": level;
         System.out.println("Ingredients: " + ingredientsName);
         String ingredients = String.join(", ", ingredientsName);
         System.out.println("Ingredients String: " + ingredients);
         String userPrompt =
-                "Using ONLY these ingredients as the base: " + ingredients + ", " +
+                "Using ONLY these ingredients as the base: " + ingredientsString + ", " +
                         "create a recipe based on: " + prompt + ". " +
                         "The recipe must follow this exact format:\n\n" +
                         "Title: <short recipe title>\n" +
