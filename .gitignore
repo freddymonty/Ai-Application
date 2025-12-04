@@ -38,3 +38,6 @@ build/
 
 ###ignore application properties###
 /application.properties
+
+### ignore user uploaded profile pics ###
+src/main/resorces/static/images/user_*
