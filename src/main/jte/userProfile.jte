@@ -56,13 +56,16 @@
 
 <header class = "bg-success">
 
-    <div class="mx-auto">
-        <div class = "title">
-            <img src="images/logo.png" height="40">
-            <a href = "/home?tab=${tab}" class = "fs-1"> Recipe Maker</a>
-        </div>
+    <div class = "col-md-1"></div>
+
+    <div class="title col-md-10 text-center">
+        <img src="images/logo.png" height="40">
+        <a href = "/home?tab=${tab}" class = "fs-1"> Recipe Maker</a>
     </div>
-    <a href="/logout" class="btn btn-secondary col-lg-auto bg-info" role="button" aria-disabled="true">Logout</a>
+
+    <div class = "col-md-1 text-end">
+        <a href="/logout" class="btn btn-secondary col-lg-auto bg-info float-right" role="button" aria-disabled="true">Logout</a>
+    </div>
 
 </header>
 <body style="background-color: lightgray;">
