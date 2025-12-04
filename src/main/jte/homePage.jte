@@ -1,3 +1,4 @@
+@param cs3220.aiapplication.model.UserJDBC user
 @param java.util.List<cs3220.aiapplication.model.RecipeJDBC> recipes
 @param java.util.List<cs3220.aiapplication.model.RecipeJDBC> favorites
 @param Boolean emptyInv
@@ -120,7 +121,13 @@
             <a href="/home?tab=${tab}">Recipe Maker</a>
         </div>
         <div class="profile">
-            <a href="/profile?tab=${tab}"><i class="bi bi-person-circle text-dark" ></i></a>
+            <a href="/profile?tab=${tab}">
+                @if(user.getProfilePicture() != null && !user.getProfilePicture().isEmpty())
+                    <img src="/images/${user.getProfilePicture()}" width="100" height="100" class="rounded-circle"/>
+                @else
+                    <i class="bi bi-person-circle text-dark fs-3"></i>
+                @endif
+            </a>
         </div>
     </div>
 </header>

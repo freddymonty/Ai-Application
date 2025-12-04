@@ -7,7 +7,12 @@ import cs3220.aiapplication.repository.UserRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
+import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
 
@@ -74,6 +79,7 @@ public class IndexController {
         model.addAttribute("recipes", recipes);
         model.addAttribute("favorites", favorites);
         model.addAttribute("tab", tab);
+        model.addAttribute("user", user);
 
         return "inventoryPage";
     }
@@ -178,6 +184,7 @@ public class IndexController {
             model.addAttribute("recipes", recipes);
             model.addAttribute("favorites", favorites);
             model.addAttribute("recipeById", recipe);
+            model.addAttribute("user", userBean.getUser());
             return "viewRecipe";
 
     }
@@ -216,6 +223,54 @@ public class IndexController {
         }
 
         return "redirect:/home?tab=" + tab;
+    }
+
+    @PostMapping("/uploadProfilePicture")
+    public String uploadProfilePicture(
+            @RequestParam("profilePic") MultipartFile profilePic,
+            @RequestParam(required = false, defaultValue = "history") String tab
+    ) throws IOException {
+
+        if (!userBean.isLoggedIn()) {
+            return "redirect:/login";
+        }
+
+        UserJDBC user = userBean.getUser();
+
+        String uploadFolder = "src/main/resources/static/images/";
+        String fileName = "user_" + user.getId() + "-" + profilePic.getOriginalFilename();
+
+        Files.copy(profilePic.getInputStream(),java.nio.file.Paths.get(uploadFolder + fileName), StandardCopyOption.REPLACE_EXISTING);
+
+        user.setProfilePicture(fileName);
+        userRepository.save(user);
+
+        return "redirect:/profile?tab=" + tab;
+    }
+
+    @PostMapping("/deleteProfilePicture")
+    public String deleteProfilePicture(@RequestParam(required = false, defaultValue = "history") String tab) {
+        if (!userBean.isLoggedIn()) {
+            return "redirect:/login";
+        }
+
+        UserJDBC user = userBean.getUser();
+        String filename = user.getProfilePicture();
+
+        if (filename != null && !filename.isEmpty()) {
+            // Delete the file from static/images
+            try {
+                java.nio.file.Path filePath = java.nio.file.Paths.get("src/main/resources/static/images", filename);
+                java.nio.file.Files.deleteIfExists(filePath);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            // Remove from user entity
+            user.setProfilePicture(null);
+            userRepository.save(user);
+        }
+
+        return "redirect:/profile?tab=" + tab;
     }
 
 }

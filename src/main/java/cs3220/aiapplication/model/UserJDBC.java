@@ -19,6 +19,9 @@ public class UserJDBC {
 
     private String password;
 
+    @Column(length=100000)
+    private String profilePicture;
+
     @OneToMany(mappedBy = "user")
     private List<IngredientJDBC> ingredients = new ArrayList<>();
 
@@ -57,6 +60,14 @@ public class UserJDBC {
 
     public String getUsername() {
         return username;
+    }
+
+    public String getProfilePicture() {
+        return profilePicture;
+    }
+
+    public void setProfilePicture(String profilePicture) {
+        this.profilePicture = profilePicture;
     }
 
     public void setUsername(String username) {
