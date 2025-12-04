@@ -10,7 +10,7 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <title>${recipeById.getTitle()}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
     <style>
@@ -202,19 +202,31 @@
 
 <main id="content" class="content p-4 d-flex flex-column " style="min-height: 80vh;">
 
-    <a href="/home?tab=${tab}" class="btn btn-secondary mb-3">&larr; Back Home</a>
-    <a href="/favoriteRecipe?id=${recipeById.getId()}&tab=${tab}" class="btn btn-warning">${recipeById.isFavorite() ? "Unfavorite" : "Favorite"}</a>
-    <a href="/deleteRecipe?id=${recipeById.getId()}&tab=${tab}" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this recipe?');">Delete Recipe</a>
 
+    <div class = "hstack">
 
+        <div class = "col-3 text-end">
+            <a href="/home?tab=${tab}" class="btn btn-secondary">&larr; Back Home</a>
+        </div>
+            <div class = "col-6 text-center">
+                <a href="file.mp3" download="file.mp3"> <button>Export</button></a>
+            </div>
+        <div class = "col-3">
+            <a href="/favoriteRecipe?id=${recipeById.getId()}&tab=${tab}" class="btn btn-warning">${recipeById.isFavorite() ? "Unfavorite" : "Favorite"}</a>
+        </div>
+    </div>
+    <div class = "text-center pt-2">
+        <h1>${recipeById.getTitle()}</h1>
+        <p>Date: ${recipeById.getDate().toString()}</p>
+        <p>Main Ingredients: ${recipeById.getMainIngredients()}</p>
 
-    <h1>${recipeById.getTitle()}</h1>
-<p>Date: ${recipeById.getDate().toString()}</p>
-<p>Main Ingredients: ${recipeById.getMainIngredients()}</p>
-
-    <h2>Instructions</h2>
-    <pre style="white-space: pre-wrap;">${recipeById.getContent()}</pre>
-
+        <h2>Instructions</h2>
+        <pre style="white-space: pre-wrap;">${recipeById.getContent()}</pre>
+    </div>
+    <br/>
+    <div class = "text-center pt-5">
+        <a href="/deleteRecipe?id=${recipeById.getId()}&tab=${tab}" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this recipe?');">Delete Recipe</a>
+    </div>
 </main>
 
 

@@ -70,14 +70,15 @@
 </header>
 <body style = "background-color: lightgray;">
     <div class="d-flex justify-content-between align-items-center mb-3" style="padding: 0 10px;">
-        <h1 class="user-info mb-0">${user.getUsername()}'s Info:</h1>
         <div class="profile mt-2">
             @if(user.getProfilePicture() != null && !user.getProfilePicture().isEmpty())
                 <img src="/images/${user.getProfilePicture()}" width="100" height="100" class="rounded-circle"/>
             @else
                 <i class="bi bi-person-circle text-dark fs-1"></i>
             @endif
-        </div>
+        <span class = "h1 align-bottom">${user.getUsername()}'s Info:</span>
+    </div>
+
     </div>
 
     <div class="container-fluid text-center">
