@@ -39,11 +39,6 @@
     text-align: left;
     }
 
-    .logout{
-        margin-top: 10px;
-        align-content: end;
-    }
-
         /* clickable title */
         .title, .title a{
             font-size: 40px;
@@ -51,26 +46,26 @@
             color: black;
             text-decoration: none;
         }
+
         .title:hover{
             transform: scale(1.05);
         }
 
     </style>
 </head>
-<body style="background-color: lightgray;">
-<%--list user information like username (needs to be added), email, and number of recipes created/favorites--%>
-<%--ability to change username--%>
-<%--Log out button--%>
 
 <header class = "bg-success">
 
-    <div class="mx-auto">
-        <div class = "title">
-            <img src="images/logo.png" height="40">
-            <a href = "/home?tab=${tab}" class = "fs-1"> Recipe Maker</a>
-        </div>
+    <div class = "col-md-1"></div>
+
+    <div class="title col-md-10 text-center">
+        <img src="images/logo.png" height="40">
+        <a href = "/home?tab=${tab}" class = "fs-1"> Recipe Maker</a>
     </div>
-    <a href="/logout" class="btn btn-secondary col-lg-auto bg-info" role="button" aria-disabled="true">Logout</a>
+
+    <div class = "col-md-1 text-end">
+        <a href="/logout" class="btn btn-secondary col-lg-auto bg-info float-right" role="button" aria-disabled="true">Logout</a>
+    </div>
 
 </header>
 <div class="d-flex justify-content-between align-items-center mb-3" style="padding: 0 10px;">
