@@ -42,4 +42,7 @@ build/
 ### ignore user uploaded profile pics ###
 src/main/resorces/static/images/user_*
 ### ignore generated pdf's ###
+### but keep the folder ###
 src/main/resources/generatedPdf/*
+!sr/main/resources/generatedPdf/
+src/main/resources/generatedPdf/.gitkeep
