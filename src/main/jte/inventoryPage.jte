@@ -149,13 +149,14 @@
         <!-- Hamburger button -->
         <button class="btn btn-outline-dark me-2 " id="toggleSidebar">&#9776;</button>
         <div class="title">
+            &nbsp;
             <img src="images/logo.png" height="40">
             <a href="/home?tab=${tab}">Recipe Maker</a>
         </div>
         <div class="profile">
             <a href="/profile?tab=${tab}">
                 @if(user.getProfilePicture() != null && !user.getProfilePicture().isEmpty())
-                    <img src="/images/${user.getProfilePicture()}" width="100" height="100" class="rounded-circle"/>
+                    <img src="/images/${user.getProfilePicture()}" width="75" height="75" class="rounded-circle"/>
                 @else
                     <i class="bi bi-person-circle text-dark fs-3"></i>
                 @endif
