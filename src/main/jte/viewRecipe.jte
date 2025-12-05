@@ -123,7 +123,7 @@
         <div class="profile">
             <a href="/profile?tab=${tab}">
                 @if(user.getProfilePicture() != null && !user.getProfilePicture().isEmpty())
-                    <img src="/images/${user.getProfilePicture()}" width="100" height="100" class="rounded-circle"/>
+                    <img src="/images/${user.getProfilePicture()}" width="75" height="75" class="rounded-circle"/>
                 @else
                     <i class="bi bi-person-circle text-dark fs-3"></i>
                 @endif
@@ -214,8 +214,8 @@
             <a href="/favoriteRecipe?id=${recipeById.getId()}&tab=${tab}" class="btn btn-warning">${recipeById.isFavorite() ? "Unfavorite" : "Favorite"}</a>
         </div>
     </div>
-    <div class = "text-center pt-2">
-        <h1>${recipeById.getTitle()}</h1>
+    <div class = "pt-2">
+        <h1 class = "text-center">${recipeById.getTitle()}</h1>
         <p>Date: ${recipeById.getDate().toString()}</p>
         <p>Main Ingredients: ${recipeById.getMainIngredients()}</p>
 
