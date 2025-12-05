@@ -41,3 +41,5 @@ build/
 
 ### ignore user uploaded profile pics ###
 src/main/resorces/static/images/user_*
+### ignore generated pdf's ###
+src/main/resources/generatedPdf/*
