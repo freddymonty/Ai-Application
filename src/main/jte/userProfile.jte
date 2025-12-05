@@ -15,6 +15,10 @@
     <title>${user.getUsername()}'s info</title>
     <style>
 
+        body{
+            background: floralwhite;
+        }
+
     header {
     display: flex;
     justify-content: space-between;
